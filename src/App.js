@@ -3,8 +3,10 @@ import React, {useState} from 'react';
 const proxyURL = "https://cors-anywhere.herokuapp.com/";
 const apiURL = "http://api.quickemailverification.com/v1/verify";
 const apiKeys = [
-    '5c1a3796439474259d938ed7ab047a97ae476cb35a0e0abec982e88f2537'
+    '5c1a3796439474259d938ed7ab047a97ae476cb35a0e0abec982e88f2537',
+    'ebe0d5da677beb5e1acb99fb4d2ba962ef9ce50687aaf8318e808c00f476'
 ];
+let apiCurrentKeyIndex = 1;
 
 function App() {
 
@@ -14,32 +16,48 @@ function App() {
     const [domain, setDomain] = useState('');
     const [emailVerifications, setEmailVerifications] = useState([]);
 
-    const checkEmails = () => {
-        checkEmail(`${firstName}.${lastName}@${domain}`, apiKeys[0]);
+    const checkEmails = async () => {
+        // await checkEmail(`${firstName}.${lastName}@${domain}`, apiKeys[apiCurrentKeyIndex]);
+        // await checkEmail(`${firstName}@${domain}`, apiKeys[apiCurrentKeyIndex]);
+        // checkEmail(`${lastName}@${domain}`, apiKeys[apiCurrentKeyIndex]);
+
+        Promise.all(
+            [
+                fetch(`${proxyURL}${apiURL}?apikey=${apiKeys[1]}&email=${firstName}.${lastName}@${domain}`).then(response => response.json()),
+                fetch(`${proxyURL}${apiURL}?apikey=${apiKeys[1]}&email=${firstName}@${domain}`).then(response => response.json())
+            ]
+        ).then(responses => {
+            console.log(responses);
+            let verifications = responses.map(response => {
+                return {
+                    "email": response.email,
+                    "name": response.user,
+                    "result": response.result,
+                    "success": response.success
+                }
+            });
+            setEmailVerifications(verifications);
+        });
     }
 
-    const checkEmail = (email, apiKey) => {
-
-        return fetch(
-            `${proxyURL}${apiURL}?apikey=${apiKey}&email=${email}`
-        )
+    const checkEmail = async (email, apiKey) => {
+        const response = await fetch(`${proxyURL}${apiURL}?apikey=${apiKey}&email=${email}`)
             .then(response => response.json())
             .then(response => {
-                console.log('Success:', response);
-                setEmailVerifications([...emailVerifications,
-                    {
-                        "email": response.email,
-                        "name": response.user,
-                        "result": response.result,
-                        "success": response.success
-                    }
-                ]);
-                return true;
+                return {
+                    "email": response.email,
+                    "name": response.user,
+                    "result": response.result,
+                    "success": response.success
+                };
             })
             .catch((error) => {
                 console.error('Error:', error);
                 return false;
             });
+        if (response) {
+            setEmailVerifications([...emailVerifications, response]);
+        }
     }
 
     return (
@@ -53,7 +71,8 @@ function App() {
                        placeholder="Last Name" onChange={e => setLastName(e.target.value)}/>
                 <input type="text" className="form-control mr-1 mt-1" id="domain" value={domain}
                        placeholder="Domain" onChange={e => setDomain(e.target.value)}/>
-                <button className="btn btn-primary mr-1 mt-1" onClick={checkEmails}>Check Emails</button>
+                <button className="btn btn-primary mr-1 mt-1" onClick={checkEmails}>Check Emails
+                </button>
             </div>
 
             {
@@ -69,8 +88,8 @@ function App() {
                     </tr>
                     </thead>
                     <tbody>
-                    {emailVerifications.map(ev =>
-                        <tr key={ev.email}>
+                    {emailVerifications.map((ev, i) =>
+                        <tr key={i}>
                             <td>{ev.email}</td>
                             <td>{ev.name}</td>
                             <td>{ev.result}</td>

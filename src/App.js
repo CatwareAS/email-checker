@@ -22,7 +22,7 @@ function App() {
 
     useEffect(() => {
         console.log('useEffect, restartCheckFor: ' + restartCheckFor);
-        if (apiCurrentKeyIndex === apiKeys.length) {
+        if (apiCurrentKeyIndex >= apiKeys.length) {
             console.log('All keys used for today');
             return;
         }
@@ -103,7 +103,7 @@ function App() {
     return (
         <div className="container">
 
-            {(apiCurrentKeyIndex === apiKeys.length) &&
+            {(apiCurrentKeyIndex >= apiKeys.length) &&
             <div className="alert alert-danger mt-5 mb-3 text-center" role="alert">
                 <h1>You have used all your free quota for today</h1>
             </div>

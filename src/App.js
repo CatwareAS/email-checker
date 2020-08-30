@@ -22,6 +22,10 @@ function App() {
 
     useEffect(() => {
         console.log('useEffect, restartCheckFor: ' + restartCheckFor);
+        if (apiCurrentKeyIndex === apiKeys.length) {
+            console.log('All keys used for today');
+            return;
+        }
         if (restartCheckFor === MULTIPLE_EMAILS) {
             checkEmails();
         } else if (restartCheckFor === SINGLE_EMAIL) {
@@ -98,6 +102,13 @@ function App() {
 
     return (
         <div className="container">
+
+            {(apiCurrentKeyIndex === apiKeys.length) &&
+            <div className="alert alert-danger mt-5 mb-3 text-center" role="alert">
+                <h1>You have used all your free quota for today</h1>
+            </div>
+            }
+
             <div className="form-inline mt-5 mb-3">
                 <input type="text" className="form-control mr-1 mt-1" id="firstName" value={firstName}
                        placeholder="First Name" onChange={e => setFirstName(e.target.value)}/>

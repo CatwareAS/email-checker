@@ -66,7 +66,11 @@ function App() {
         let result = [];
         if (middleName.trim()) {
             result.push(`${firstName}.${middleName}.${lastName}@${domain}`);
+            result.push(`${firstName.substr(0, 1)}${lastName}@${domain}`);
+        } else {
+            result.push(`${firstName.substr(0, 1)}${lastName}@${domain}`);
         }
+        result.push(`${firstName}${lastName.substr(0, 1)}@${domain}`);
         result.push(`${firstName}.${lastName}@${domain}`);
         result.push(`${firstName}@${domain}`);
         result.push(`${lastName}@${domain}`);

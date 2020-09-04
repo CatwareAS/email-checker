@@ -64,18 +64,16 @@ function App() {
 
     const generateEmailsCombinations = (firstName, middleName, lastName, domain) => {
         let result = [];
-        if (middleName.trim()) {
-            result.push(`${firstName}.${middleName}.${lastName}@${domain}`);
-            result.push(`${firstName.substr(0, 1)}${lastName}@${domain}`);
-        } else {
-            result.push(`${firstName.substr(0, 1)}${lastName}@${domain}`);
-        }
-        result.push(`${firstName}${lastName.substr(0, 1)}@${domain}`);
         result.push(`${firstName}.${lastName}@${domain}`);
         result.push(`${firstName}@${domain}`);
-        result.push(`${lastName}@${domain}`);
+        result.push(`${firstName.substr(0, 1)}${lastName.substr(0, 1)}@${domain}`);
+        if (middleName.trim()) {
+            result.push(`${firstName}.${middleName}.${lastName}@${domain}`);
+            result.push(`${firstName.substr(0, 1)}${middleName.substr(0, 1)}${lastName.substr(0, 1)}@${domain}`);
+        }
+        result.push(`${firstName.substr(0, 1)}${lastName.substr(0, 2)}@${domain}`);
         result.push(`${firstName.substr(0, 2)}${lastName.substr(0, 2)}@${domain}`);
-        result.push(`${firstName.length > 2 ? firstName.substr(0, 3) : firstName}${lastName.length > 2 ? lastName.substr(0, 3) : lastName}@${domain}`);
+        result.push(`${firstName.substr(0, 1)}.${lastName}@${domain}`);
         return result;
     }
 

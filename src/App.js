@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 
-const proxyURL = "https://cors-anywhere.herokuapp.com/";
+const proxyURL = "https://catware-cors-proxy.herokuapp.com/";
 const apiURL = "http://api.quickemailverification.com/v1/verify";
 const apiKeys = [
     '5c1a3796439474259d938ed7ab047a97ae476cb35a0e0abec982e88f2537',
